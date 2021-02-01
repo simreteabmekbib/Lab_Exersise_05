@@ -9,6 +9,7 @@ const taskList = document.querySelector('.collection');          //The ul
 const clearBtn = document.querySelector('.clear-tasks');      //the all task clear button
 
 
+
 // form submit 
 form.addEventListener('submit', addNewTask);
 
@@ -31,6 +32,11 @@ function addNewTask(e) {
     const li = document.createElement('li');
     li.className = 'collection-item';
     li.appendChild(document.createTextNode(taskInput.value));
+    // use date attribute
+    const time = document.createElement('time');
+    time.setAttribute('datetime', Date.now());
+    li.appendChild(time);
+
     const link = document.createElement('a');
     link.innerHTML = '<i class="fa fa-remove"></i>';
     link.className = 'delete-item secondary-content';
@@ -83,13 +89,17 @@ function filterTasks(e) {
     });
 
 }
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems, options);
-  });
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     var elems = document.querySelectorAll('select');
+//     var instances = M.FormSelect.init(elems, options);
+//   });
 
   // Or with jQuery
 
   $(document).ready(function(){
     $('select').formSelect();
   });
+  
+
