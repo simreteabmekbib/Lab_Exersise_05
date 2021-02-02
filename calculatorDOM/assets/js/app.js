@@ -36,7 +36,24 @@ deleteButton.addEventListener('click', button => {
   calculator.delete()
   calculator.updateDisplay()
 })
-
+function add(num1, num2){
+  return num1 + num2;
+}
+function sub(num1, num2){
+  return num1 - num2;
+}
+function div(num1, num2){
+  return num1 / num2;
+}
+function mul(num1, num2){
+  return num1 * num2;
+}
+function sqrt(num2){
+  return Math.sqrt(num2);
+}
+function power(num1, num2){
+  return Math.pow(num1, num2);
+}
 
 
 
