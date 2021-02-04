@@ -1,105 +1,135 @@
-const taskInput = document.querySelector('#task');               //the task input text field
+const reloadIcon = document.querySelector('.fa'); 
+const taskInput = document.querySelector('#task');
+const dateInput = document.querySelector('#dateInput');
+const form = document.querySelector('#task-form');
+const filter = document.querySelector('#filter');
+const taskList = document.querySelector('.collection'); 
+const clearBtn = document.querySelector('.clear-tasks'); 
+const asscending = document.querySelector('.asc');
+const decending = document.querySelector('.des');
 
-const form = document.querySelector('#task-form');             //The form at the top
 
-const filter = document.querySelector('#filter');                      //the task filter text field
-
-const taskList = document.querySelector('.collection');          //The ul
-
-const clearBtn = document.querySelector('.clear-tasks');      //the all task clear button
-
-
-
-// form submit 
 form.addEventListener('submit', addNewTask);
-
-// Clear All Tasks
 clearBtn.addEventListener('click', clearAllTasks);
-
-//   Filter Task 
 filter.addEventListener('keyup', filterTasks);
-
 taskList.addEventListener('click', removeTask);
- // Add New  Task Function definition 
-function addNewTask(e) {
-    if (taskInput.value === '') 
-    {
-        taskInput.style.borderColor = "red";
-        return;//avoiding else statement
+reloadIcon.addEventListener('click', reloadPage);
+asscending.addEventListener("click", sortAsc  );
+decending.addEventListener("click", sortDsc );
 
-    }
-    taskInput.style.borderColor = "black";
-    const li = document.createElement('li');
-    li.className = 'collection-item';
-    li.appendChild(document.createTextNode(taskInput.value));
-    // use date attribute
-    const time = document.createElement('time');
-    time.setAttribute('datetime', Date.now());
-    li.appendChild(time);
 
-    const link = document.createElement('a');
+function createTask(task, date) {
+    const li = document.createElement("li");
+    li.className = "collection-item";
+    const p = document.createElement("time")
+    p.innerHTML = task
+    li.appendChild(p);
+    const addDate = document.createElement("p");
+    addDate.className = "d-none";
+    addDate.innerHTML = date;
+    li.appendChild(addDate);
+    const link = document.createElement("a");
+    link.className = "delete-item secondary-content";
     link.innerHTML = '<i class="fa fa-remove"></i>';
-    link.className = 'delete-item secondary-content';
     li.appendChild(link);
     taskList.appendChild(li);
-
-
-   e.preventDefault();    //disable form submission
-
+    
 }
 
 
-// Remove Task function definition 
-function removeTask(e) {
 
-    if (e.target.parentElement.classList.contains('delete-item'))
-        {
-        if (confirm('Are You Sure about that ?'))
-        {
-            e.target.parentElement.parentElement.remove();
+
+
+function addNewTask(e){
+
+    e.preventDefault();
+    if (taskInput.value === ''){
+        taskInput.style.borderColor="red";
+
+        return;
+    }
+    const nowDate = new Date();
+    const nowDateString = nowDate.getHours() + ":" + nowDate.getMinutes() + ":" + nowDate.getSeconds() + ":" + nowDate.getMilliseconds()
+
+    createTask(taskInput.value, nowDateString)
+    taskInput.value = "";
+
+}
+
+function sortAsc() {
+    const allTasks = document.querySelectorAll('.collection-item')
+    const allContents = []
+    allTasks.forEach(function (task) {
+        let content = {
+            task: task.childNodes[0].textContent,
+            date: task.childNodes[2].textContent
         }
 
-    }
+        allContents.push(content)
+    })
 
+    const sortedContent = allContents.sort((a, b) => (a.date > b.date) ? 1 : -1)
+
+
+    document.querySelector('.collection').innerHTML = ''
+    sortedContent.forEach(function (task) {
+        createTask(task.task, task.date)
+    })
 }
 
-// Clear Task Function definition 
-function clearAllTasks() {
-   
-    //This is the first way 
-    // taskList.innerHTML = '';    
+function sortDsc() {
+    const allTasks = document.querySelectorAll('.collection-item')
+    const allContents = []
+    allTasks.forEach(function (task) {
+        let content = {
+            task: task.childNodes[0].textContent,
+            date: task.childNodes[2].textContent
+        }
 
-    //  Second Way 
-    while (taskList.firstChild) {
+        allContents.push(content)
+    })
+
+    const sortedContent = allContents.reverse((a, b) => (a.date > b.date) ? 1 : -1)
+
+
+    document.querySelector('.collection').innerHTML = ''
+    sortedContent.forEach(function (task) {
+        createTask(task.task, task.date)
+    })
+}
+
+function clearAllTasks(){
+    while (taskList.firstChild){
         taskList.removeChild(taskList.firstChild);
     }
-
 }
-// Filter tasks function definition 
+
+// *************************************************************************************
 function filterTasks(e) {
-    var value1= document.getElementById("filter").value;
-    var items=document.querySelectorAll('.collection-item');
-    items.forEach(item => {
-        if (item.textContent.indexOf(value1)== -1){
-            item.style.display = "none";
+    var txtValue, ul, li, a; 
+    ul = document.getElementById("myUl");
+    li = ul.getElementsByTagName('li');
+    for (i = 0; i < li.length; i++) {
+        a = li[i].firstChild;
+        txtValue = a.textContent;
+        if (txtValue.toUpperCase().indexOf(filter.value.toUpperCase()) > -1) {
+          li[i].style.display = "";
+        } else {
+          li[i].style.display = "none";
         }
-        else {
-            item.style.display = "block";
-           }
-    });
+      }
+} 
+// *************************************************************************************
 
+
+function removeTask(e){
+    if (e.target.parentElement.classList.contains('delete-item')){
+        if (confirm('Are you Sure aboyt that ?')){
+            e.target.parentElement.parentElement.remove();
+        }
+    }
 }
 
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     var elems = document.querySelectorAll('select');
-//     var instances = M.FormSelect.init(elems, options);
-//   });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('select').formSelect();
-  });
-  
-
+function reloadPage() {
+    location.reload();
+}
